@@ -1,46 +1,50 @@
 import os
 import time
 
+buffer_len = 1                                   #размер буфера чтения
+
 numeral = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]    #вспомогательный массив
-symbol = 1                                                # переменная для отсчета символов
 d1 = 0       #нечетные цифры
 d2 = 0       #четные цифры
-
-f = open ('text.txt')
-s = f.read()               #тут узнаем кол-во символов в файле
-f.close()
-s = len(s)
 
 try:
     print("\n-----The result of the program-----\n -----Local time",time.ctime(),"-----")
     start = time.time()
-    f = open ('text.txt')
-    while symbol <= s:
-        arr = f.read(symbol)         #перебирам символы
-        for i in range(len(arr)):      
-            if (arr[i] != '0') and (arr[i] != '1') and (arr[i] != '2') and (arr[i] != '3') and (arr[i] != '4') and (arr[i] != '5') and (arr[i] != '6') and (arr[i] != '7') and (arr[i] != '8') and (arr[i] != '9'):  #отсееваем всё кроме цифр
-                t = 10
-            else:
-                t = int(arr[i])         #преобразовываем значения символа в цифру
-            if (t % 2 == 0) and (t != 10):     #находим четные и нечеиные цифры
+    with open("text.txt", "r") as file:         # открываем файл
+        buffer = file.read(buffer_len)          # читаем первый блок
+        if not buffer:                          # если файл пустой
+            print ("\nThe text.txt file in the project directory is empty.\nAdd a non-empty file to the directory or rename an existing *.txt file.")
+        
+        while buffer:                               # пока файл не пустой
+            while (buffer<'0' or buffer>'9') and buffer:         # ищем цифры
+                buffer = file.read(buffer_len)      # читаем очередной блок
+
+            number_buffer = int(buffer)     #разделяем числа на четные и нечетные
+            if number_buffer % 2 == 0:
                 d2 += 1
-            elif t % 2 != 0:
+            else:
                 d1 += 1
+
             for j in range(len(numeral)):       #с помощью вспомогательного массива показываем цифры которые использутся в файле
-                j = t
-                numeral[j] = t
-            symbol += 1
-    f.close()
-    arr = []
+                j = number_buffer
+                numeral[j] = number_buffer
+
+            buffer = file.read(buffer_len)
+
+
     for j in range(len(numeral)):        #убираем лишнее
         if 10 in numeral:
             numeral.remove(10)
+
+
     if (d1 == 0) and (d2 == 0):
         print('File is empty or contains no numbers')           #сообщение, если файл пустой, или в нем нет цифр
     else:
         print('Numbers used:', numeral)           #выводим результат
         print('Number of odd numbers:', d1)
         print('Number of even numbers:', d2)
+
+
 
     finish = time.time()
     result = finish - start
