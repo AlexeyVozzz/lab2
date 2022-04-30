@@ -2,6 +2,7 @@ import os
 import time
 
 buffer_len = 1                                   #размер буфера чтения
+fax = True
 
 numeral = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]    #вспомогательный массив
 d1 = 0       #нечетные цифры
@@ -19,6 +20,9 @@ try:
             while (buffer<'0' or buffer>'9') and buffer:         # ищем цифры
                 buffer = file.read(buffer_len)      # читаем очередной блок
 
+            if buffer=='':                       #если файл кончается, перестаем выполнять вычисления
+                break
+
             number_buffer = int(buffer)     #разделяем числа на четные и нечетные
             if number_buffer % 2 == 0:
                 d2 += 1
@@ -29,7 +33,10 @@ try:
                 j = number_buffer
                 numeral[j] = number_buffer
 
+
             buffer = file.read(buffer_len)
+
+            
 
 
     for j in range(len(numeral)):        #убираем лишнее
